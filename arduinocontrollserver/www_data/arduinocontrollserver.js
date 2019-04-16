@@ -4,8 +4,7 @@ if (typeof logger === "undefined")
 var arduinocontrollserver = {
     global_t: 0,
     all_ports: {},
-    identify_functions :[],
-    identified:false,
+
     update_ports(available_ports, connected_ports, ignored_port) {
         for (let port in this.all_ports) {
             this.all_ports[port].connected = false;
@@ -38,18 +37,6 @@ var acs = arduinocontrollserver;
 
 
 $(function () {
-    wscs.add_cmd_funcion("indentify", function () {
-        wscs.ws.send(wscs.commandmessage(cmd = "indentify", sender = "gui", "server", true, [], {name: "gui"}))
-        acs.identified=true;
-        let t=new Date().getTime();
-        while (new Date().getTime()-t<1000){}
-        for (let i=0;i<acs.identify_functions.length;i++){
-            acs.identify_functions[i]();
-        }
-    }.bind(acs));
-    wscs.add_cmd_funcion("set_time", function (data) {
-        acs.global_t = data.data.kwargs.time
-    }.bind(acs));
     wscs.add_cmd_funcion("set_ports", function (data) {
         acs.update_ports(data.data.kwargs.available_ports, data.data.kwargs.connected_ports, data.data.kwargs.ignored_port)
     }.bind(acs));
